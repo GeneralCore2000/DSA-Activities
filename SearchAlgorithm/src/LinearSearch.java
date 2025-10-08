@@ -30,7 +30,7 @@ public class LinearSearch {
                     checkKey(500);
                     break outerloop;
                 case 3:
-                    br = findFile("5k Unsort.csv");
+                    br = findFile("5000 Unsort.csv");
                     checkKey(5000);
                     break outerloop;
                 default:
