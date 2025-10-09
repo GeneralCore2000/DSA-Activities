@@ -93,8 +93,4 @@ public class LinearSearch {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        new LinearSearch();
-    }
 }

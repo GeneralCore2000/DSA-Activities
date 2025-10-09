@@ -119,8 +119,4 @@ public class BinarySearch {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        new BinarySearch();
-    }
 }
