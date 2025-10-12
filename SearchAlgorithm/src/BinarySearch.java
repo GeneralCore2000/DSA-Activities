@@ -9,14 +9,13 @@ import java.util.Scanner;
 public class BinarySearch {
     private Scanner in = new Scanner(System.in);
     private ArrayList<Integer> intList = new ArrayList<>();
-    private int[][] keys = {{2, 30, 42, 26, 13, 25, 23, 16, 1, 5, 12, 18, 35, 33, 61, 21, 44, 28, 42, 10, 14, 20, 42, 12, 19, 26, 17, 29, 33, 42},
-            {39, 160, 400, 184, 254, 36, 58, 38, 126, 427, 327, 378, 31, 188, 234, 286, 345, 74, 150, 407, 69, 181, 203, 309, 367, 17, 341, 347, 113, 390},
-            {4005, 333, 3023, 2855, 4695, 2399, 591, 3322, 788, 1278, 3866, 3000, 116, 1201, 4674, 350, 1686, 529, 974, 393, 3308, 2967, 4603, 3967, 479, 841, 4503, 836, 3677, 1895}};
+    private int[][] keys;
     private final long[] timeArray = new long[30];
     private long TIME_RESULT;
     BufferedReader br;
 
-    public BinarySearch() {
+    public BinarySearch(int[][] keys) {
+        this.keys = keys;
         Statistics stats = new Statistics(timeArray);
         System.out.println("=".repeat(10) + " BINARY SEARCH " + "=".repeat(10));
         System.out.println("[1] 50 ITEMS\n[2] 500 ITEMS\n[3] 5000 ITEMS");
