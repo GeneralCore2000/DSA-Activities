@@ -52,10 +52,8 @@ public class Main {
         System.out.print("Enter ID to find >>: ");
         int id = Integer.parseInt(in.nextLine());
         ArrayList<ArrayList<String>> findId = binarySearch(id);
-        if (findId != null) {
-            System.out.println("-".repeat(50));
-            System.out.printf("%-5s | %-5s%n", findId.getFirst().getFirst(), findId.getFirst().get(1));
-        }
+        System.out.println("-".repeat(50));
+        System.out.printf("%-5s | %-5s%n", findId.getFirst().getFirst(), findId.getFirst().get(1));
     }
 
     private void searchByName() {
@@ -167,7 +165,6 @@ public class Main {
         long END = System.nanoTime();
         TIME_RESULT = END - START;
     }
-
 
     private void addToArray() {
         try {
