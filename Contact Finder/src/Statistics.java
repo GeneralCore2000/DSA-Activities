@@ -18,7 +18,7 @@ public class Statistics {
         this.contactRecords = contactRecords;
         this.linearSearchCount = linearSearchCount;
         this.binarySearchCount = binarySearchCount;
-        this.recentKeyValue = recentKeyValue;
+        this.recentKeyValue = (recentKeyValue == null) ? "" : recentKeyValue;
         this.recentKeyResult = recentKeyResult;
         uniqueNames = compileUniqueFirstNames();
         totalNumberOfContacts = contactRecords.size();
