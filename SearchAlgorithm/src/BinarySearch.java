@@ -74,10 +74,6 @@ public class BinarySearch {
         }
         insertionSort(intList);
 
-        for (int i = 0; i < 5; i++) {
-            binarySearch(keys[keyIndex][0]); //Warm-up
-        }
-
         for (int i = 0; i < 30; i++) {
             int currentKeyIndex = keys[keyIndex][i];
             System.out.print((i + 1) + ".\t Key: " + currentKeyIndex + " \t| ");

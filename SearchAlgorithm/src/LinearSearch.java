@@ -56,9 +56,6 @@ public class LinearSearch {
             throw new RuntimeException(e);
         }
 
-        for (int i = 0; i < 5; i++) {
-            linearSearch(keys[keyIndex][0]); //Warm-up
-        }
 
         for (int i = 0; i < 30; i++) {
             int currentKeyIndex = keys[keyIndex][i];
