@@ -35,7 +35,8 @@ public class Statistics {
         System.out.println("Maximum ID: " + maximumID);
         System.out.println("\nLinear Searches Performed: " + linearSearchCount);
         System.out.println("Binary Searches Performed: " + binarySearchCount);
-        System.out.println("\nLast search result: " + recentKeyResult + " (" + recentKeyValue + ")\n");
+        System.out.println("\nLast search result: " + recentKeyResult + " (" + recentKeyValue + ")");
+        System.out.println("-".repeat(68) + "\n");
     }
 
     public void menu() {
