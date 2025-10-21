@@ -8,6 +8,10 @@ public class Main {
     private BufferedReader br;
     private Scanner in = new Scanner(System.in);
     private ArrayList<ArrayList<String>> contactRecords = new ArrayList<>();
+    private int binarySearchCount = 0;
+    private int linearSearchCount = 0;
+    private String recentKeyValue;
+    private boolean recentKeyResult = false;
 
     public Main() {
         try {
@@ -37,6 +41,10 @@ public class Main {
                     searchByName();
                     break;
                 case 3:
+                    Statistics stats = new Statistics(contactRecords, linearSearchCount, binarySearchCount,
+                            recentKeyValue, recentKeyResult);
+                    stats.summarizeStats();
+                    stats.menu();
                     break;
                 case 4:
                     return;
@@ -47,21 +55,34 @@ public class Main {
     private void searchByID() {
         insertionSort();
         System.out.print("Enter ID to find >>: ");
-        int id = Integer.parseInt(in.nextLine());
-        ArrayList<ArrayList<String>> findId = binarySearch(id);
+        int key = Integer.parseInt(in.nextLine());
+        ArrayList<ArrayList<String>> findId = binarySearch(key);
+        recentKeyValue = key + "";
+        binarySearchCount++;
+        if (findId == null) {
+            System.out.println("ID: " + key + " is non-existing.");
+            recentKeyResult = false;
+            return;
+        }
         System.out.println("-".repeat(50));
         System.out.printf("%-5s | %-5s%n", findId.getFirst().getFirst(), findId.getFirst().get(1));
+        recentKeyResult = true;
     }
 
     private void searchByName() {
         System.out.print("Enter name to find >>: ");
         String name = in.nextLine();
         ArrayList<ArrayList<String>> findName = linearSearch(name);
-        System.out.println("\nFound " + (findName.size() - 1) + "x record(s) for name " + name);
+        recentKeyValue = name;
+        linearSearchCount++;
+
+        System.out.println("\nFound " + (findName.size()) + "x record(s) for name " + name);
+
         System.out.println("-".repeat(50));
         for (int i = 0; i < findName.size() - 1; i++) {
             System.out.printf("%-5s %-5s | %-5s%n", (i + 1) + ".", findName.get(i).get(0), findName.get(i).get(1));
         }
+        recentKeyResult = !findName.isEmpty();
     }
 
     private ArrayList<ArrayList<String>> binarySearch(int key) {
