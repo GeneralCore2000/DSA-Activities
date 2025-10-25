@@ -23,6 +23,10 @@ public class Main {
         }
     }
 
+    public static void main(String[] args) {
+        new Main().menu();
+    }
+
     private void menu() {
         while (true) {
             System.out.println();
@@ -79,7 +83,7 @@ public class Main {
         System.out.println("\nFound " + (findName.size()) + "x record(s) for name " + name);
 
         System.out.println("-".repeat(50));
-        for (int i = 0; i < findName.size() - 1; i++) {
+        for (int i = 0; i < findName.size(); i++) {
             System.out.printf("%-5s %-5s | %-5s%n", (i + 1) + ".", findName.get(i).get(0), findName.get(i).get(1));
         }
         recentKeyResult = !findName.isEmpty();
@@ -110,7 +114,9 @@ public class Main {
     private ArrayList<ArrayList<String>> linearSearch(String key) {
         ArrayList<ArrayList<String>> names = new ArrayList<>();
         for (ArrayList<String> row : contactRecords) {
-            if (row.get(1).contains(key)) {
+            String fullName = row.get(1);
+            String firstName = fullName.substring(0, row.get(1).indexOf(' '));
+            if (firstName.equals(key) || fullName.equals(key)) {
                 names.add(row);
             }
         }
@@ -144,9 +150,5 @@ public class Main {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-        new Main().menu();
     }
 }

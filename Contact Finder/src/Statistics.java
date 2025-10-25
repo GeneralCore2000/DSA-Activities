@@ -5,13 +5,13 @@ public class Statistics {
     private final Scanner in = new Scanner(System.in);
     private final int totalNumberOfContacts;
     private final ArrayList<ArrayList<String>> contactRecords;
-    private ArrayList<String> uniqueNames = new ArrayList<>();
     private final int minimumID;
     private final int maximumID;
     private final int linearSearchCount;
     private final int binarySearchCount;
     private final String recentKeyValue;
     private final boolean recentKeyResult;
+    private ArrayList<String> uniqueNames = new ArrayList<>();
 
     public Statistics(ArrayList<ArrayList<String>> contactRecords, int linearSearchCount, int binarySearchCount,
                       String recentKeyValue, boolean recentKeyResult) {
@@ -56,8 +56,8 @@ public class Statistics {
 
     private void displayNameStats() {
         ArrayList<String> uniqueNames = compileUniqueFirstNames();
-        ArrayList<Integer> nameCounts = countFirstNameFrequency();
         bubbleSort(uniqueNames);
+        ArrayList<Integer> nameCounts = countFirstNameFrequency();
         for (int i = 0; i < uniqueNames.size(); i++) {
             System.out.println((i + 1) + ". " + uniqueNames.get(i) + " (" + nameCounts.get(i) + "x)");
         }
@@ -65,18 +65,21 @@ public class Statistics {
 
     private ArrayList<Integer> countFirstNameFrequency() {
         ArrayList<Integer> nameCountList = new ArrayList<>();
-        for (String uniqueNames : uniqueNames) {
+
+        for (String name : uniqueNames) {
             int count = 0;
-            for (ArrayList<String> contactRecords : contactRecords) {
-                String fullName = contactRecords.get(1);
+            for (ArrayList<String> contactRecord : contactRecords) {
+                String fullName = contactRecord.get(1);
                 int spaceIndex = fullName.indexOf(' ');
-                String firstName = fullName.substring(0, spaceIndex);
-                if (firstName.equals(uniqueNames)) {
+                String firstName = (spaceIndex != -1) ? fullName.substring(0, spaceIndex) : fullName;
+
+                if (firstName.equals(name)) {
                     count++;
                 }
             }
             nameCountList.add(count);
         }
+
         return nameCountList;
     }
 
@@ -84,22 +87,15 @@ public class Statistics {
         ArrayList<String> uniqueNamesList = new ArrayList<>();
 
         for (ArrayList<String> contactRecord : contactRecords) {
-            boolean existing = false;
             String fullName = contactRecord.get(1);
             int spaceIndex = fullName.indexOf(' ');
+            String firstName = (spaceIndex != -1) ? fullName.substring(0, spaceIndex) : fullName;
 
-            String firstName = fullName.substring(0, spaceIndex);
-
-            for (String name : uniqueNamesList) {
-                if (firstName.equals(name)) {
-                    existing = true;
-                    break;
-                }
-            }
-            if (!existing) {
+            if (!uniqueNamesList.contains(firstName)) {
                 uniqueNamesList.add(firstName);
             }
         }
+
         return uniqueNamesList;
     }
 
