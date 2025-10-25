@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+    public static int binaryComparisonCount = 0;
+    public static int linearComparisonCount = 0;
+    public static long binarySearchTime = 0; // NEW: store elapsed time (ns)
+    public static long linearSearchTime = 0; // NEW: store elapsed time (ns)
+
     private BufferedReader br;
     private Scanner in = new Scanner(System.in);
     private ArrayList<ArrayList<String>> contactRecords = new ArrayList<>();
@@ -12,6 +17,9 @@ public class Main {
     private int linearSearchCount = 0;
     private String recentKeyValue;
     private boolean recentKeyResult = false;
+    private boolean isBinarySearchLastUsed = true;
+    public static int lastFoundIndex = -1;
+    public static String lastFoundValue = "";
 
     public Main() {
         try {
@@ -30,7 +38,9 @@ public class Main {
     private void menu() {
         while (true) {
             System.out.println();
-            System.out.println("=".repeat(10) + "Welcome to your contact list." + "=".repeat(10));
+            System.out.println("=".repeat(40));
+            System.out.println("     Welcome to your contact list.");
+            System.out.println("=".repeat(40));
             System.out.println("[1] Search by ID (Binary over sorted IDs)");
             System.out.println("[2] Search by Name (Linear over names)");
             System.out.println("[3] Show Stats");
@@ -38,20 +48,17 @@ public class Main {
             System.out.print("Enter choice >>: ");
             int userChoice = Integer.parseInt(in.nextLine());
             switch (userChoice) {
-                case 1:
-                    searchByID();
-                    break;
-                case 2:
-                    searchByName();
-                    break;
-                case 3:
+                case 1 -> searchByID();
+                case 2 -> searchByName();
+                case 3 -> {
                     Statistics stats = new Statistics(contactRecords, linearSearchCount, binarySearchCount,
-                            recentKeyValue, recentKeyResult);
+                            recentKeyValue, recentKeyResult, isBinarySearchLastUsed);
                     stats.summarizeStats();
                     stats.menu();
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     return;
+                }
             }
         }
     }
@@ -60,7 +67,12 @@ public class Main {
         insertionSort();
         System.out.print("Enter ID to find >>: ");
         int key = Integer.parseInt(in.nextLine());
+
+        long start = System.nanoTime(); // start timing
         ArrayList<ArrayList<String>> findId = binarySearch(key);
+        long end = System.nanoTime(); // end timing
+        binarySearchTime = end - start; // record duration
+
         recentKeyValue = key + "";
         binarySearchCount++;
         if (findId == null) {
@@ -76,12 +88,16 @@ public class Main {
     private void searchByName() {
         System.out.print("Enter name to find >>: ");
         String name = in.nextLine();
+
+        long start = System.nanoTime(); // start timing
         ArrayList<ArrayList<String>> findName = linearSearch(name);
+        long end = System.nanoTime(); // end timing
+        linearSearchTime = end - start; // record duration
+
         recentKeyValue = name;
         linearSearchCount++;
 
         System.out.println("\nFound " + (findName.size()) + "x record(s) for name " + name);
-
         System.out.println("-".repeat(50));
         for (int i = 0; i < findName.size(); i++) {
             System.out.printf("%-5s %-5s | %-5s%n", (i + 1) + ".", findName.get(i).get(0), findName.get(i).get(1));
@@ -90,18 +106,26 @@ public class Main {
     }
 
     private ArrayList<ArrayList<String>> binarySearch(int key) {
+        isBinarySearchLastUsed = true;
         int left = 0;
         int right = contactRecords.size() - 1;
         ArrayList<ArrayList<String>> result = new ArrayList<>();
+        binaryComparisonCount = 0;
+        lastFoundIndex = -1;
+        lastFoundValue = "";
 
         while (left <= right) {
             int middle = left + (right - left) / 2;
+            binaryComparisonCount++;
             int middleId = Integer.parseInt(contactRecords.get(middle).getFirst());
 
             if (middleId == key) {
+                lastFoundIndex = middle;
+                lastFoundValue = contactRecords.get(middle).get(1);
                 result.add(contactRecords.get(middle));
                 return result;
             }
+
             if (middleId < key) {
                 left = middle + 1;
             } else {
@@ -112,12 +136,21 @@ public class Main {
     }
 
     private ArrayList<ArrayList<String>> linearSearch(String key) {
+        isBinarySearchLastUsed = false;
         ArrayList<ArrayList<String>> names = new ArrayList<>();
-        for (ArrayList<String> row : contactRecords) {
-            String fullName = row.get(1);
-            String firstName = fullName.substring(0, row.get(1).indexOf(' '));
+        linearComparisonCount = 0;
+        lastFoundIndex = -1;
+        lastFoundValue = "";
+
+        for (int i = 0; i < contactRecords.size(); i++) {
+            linearComparisonCount++;
+            String fullName = contactRecords.get(i).get(1);
+            String firstName = fullName.substring(0, fullName.indexOf(' '));
+
             if (firstName.equals(key) || fullName.equals(key)) {
-                names.add(row);
+                names.add(contactRecords.get(i));
+                lastFoundIndex = i;
+                lastFoundValue = fullName;
             }
         }
         return names;

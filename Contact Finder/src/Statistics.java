@@ -11,24 +11,27 @@ public class Statistics {
     private final int binarySearchCount;
     private final String recentKeyValue;
     private final boolean recentKeyResult;
+    private boolean isBinarySearchLastUsed;
     private ArrayList<String> uniqueNames = new ArrayList<>();
 
     public Statistics(ArrayList<ArrayList<String>> contactRecords, int linearSearchCount, int binarySearchCount,
-                      String recentKeyValue, boolean recentKeyResult) {
+                      String recentKeyValue, boolean recentKeyResult, boolean isBinarySearchLastUsed) {
         this.contactRecords = contactRecords;
         this.linearSearchCount = linearSearchCount;
         this.binarySearchCount = binarySearchCount;
         this.recentKeyValue = (recentKeyValue == null) ? "" : recentKeyValue;
         this.recentKeyResult = recentKeyResult;
+        this.isBinarySearchLastUsed = isBinarySearchLastUsed;
         uniqueNames = compileUniqueFirstNames();
         totalNumberOfContacts = contactRecords.size();
         minimumID = getMinimumID();
         maximumID = getMaximumID();
-
     }
 
     public void summarizeStats() {
-        System.out.println("\n" + "=".repeat(20) + " CONTACT RECORDS STATISTICS " + "=".repeat(20));
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("       CONTACT RECORDS STATISTICS ");
+        System.out.println("=".repeat(40));
         System.out.println("Total number of contacts: " + totalNumberOfContacts);
         System.out.println("Is contact records sorted: " + isSorted());
         System.out.println("\nMinimum ID: " + minimumID);
@@ -42,6 +45,7 @@ public class Statistics {
     public void menu() {
         System.out.println("[0] Go back");
         System.out.println("[1] See unique names and frequency");
+        System.out.println("[2] Track Metrics");
         System.out.print("Enter choice >>: ");
         int choice = Integer.parseInt(in.nextLine());
         switch (choice) {
@@ -51,8 +55,33 @@ public class Statistics {
                 System.out.println("\n" + "=".repeat(20) + " UNIQUE NAMES " + "=".repeat(20));
                 displayNameStats();
                 break;
+            case 2:
+                trackMetrics();
+                break;
         }
     }
+
+    private void trackMetrics() {
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("            Track Metrics");
+        System.out.println("=".repeat(40));
+        System.out.print("Last search used: ");
+
+        if (isBinarySearchLastUsed) {
+            System.out.println("Binary Search Algorithm");
+            System.out.println("Comparisons: " + Main.binaryComparisonCount);
+            System.out.println("Execution Time: " + Main.binarySearchTime + " ns");
+        } else {
+            System.out.println("Linear Search Algorithm");
+            System.out.println("Comparisons: " + Main.linearComparisonCount);
+            System.out.println("Execution Time: " + Main.linearSearchTime + " ns");
+        }
+
+        System.out.println("Found Index: " + (Main.lastFoundIndex == -1 ? "N/A" : Main.lastFoundIndex));
+        System.out.println("Found Value: " + (Main.lastFoundValue.isEmpty() ? "N/A" : Main.lastFoundValue));
+    }
+
+
 
     private void displayNameStats() {
         ArrayList<String> uniqueNames = compileUniqueFirstNames();
