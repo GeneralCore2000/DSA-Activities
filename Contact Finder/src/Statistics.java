@@ -29,67 +29,66 @@ public class Statistics {
     }
 
     public void summarizeStats() {
-        System.out.println("\n" + "=".repeat(40));
-        System.out.println("       CONTACT RECORDS STATISTICS ");
-        System.out.println("=".repeat(40));
-        System.out.println("Total number of contacts: " + totalNumberOfContacts);
-        System.out.println("Is contact records sorted: " + isSorted());
-        System.out.println("\nMinimum ID: " + minimumID);
-        System.out.println("Maximum ID: " + maximumID);
-        System.out.println("\nLinear Searches Performed: " + linearSearchCount);
-        System.out.println("Binary Searches Performed: " + binarySearchCount);
-        System.out.println("\nLast search result: " + recentKeyResult + " (" + recentKeyValue + ")");
-        System.out.println("-".repeat(68) + "\n");
+        System.out.println("\n" + "═".repeat(50));
+        System.out.println("📊 CONTACT RECORDS STATISTICS");
+        System.out.println("═".repeat(50));
+        System.out.printf("Total Contacts       : %d%n", totalNumberOfContacts);
+        System.out.printf("Sorted by ID         : %b%n", isSorted());
+        System.out.printf("Minimum ID           : %d%n", minimumID);
+        System.out.printf("Maximum ID           : %d%n", maximumID);
+        System.out.printf("Linear Searches Done : %d%n", linearSearchCount);
+        System.out.printf("Binary Searches Done : %d%n", binarySearchCount);
+        System.out.printf("Last Search Result   : %s (%s)%n", recentKeyResult, recentKeyValue);
+        System.out.println("─".repeat(50));
     }
 
     public void menu() {
-        System.out.println("[0] Go back");
-        System.out.println("[1] See unique names and frequency");
-        System.out.println("[2] Track Metrics");
-        System.out.print("Enter choice >>: ");
-        int choice = Integer.parseInt(in.nextLine());
-        switch (choice) {
-            case 0:
-                return;
-            case 1:
-                System.out.println("\n" + "=".repeat(20) + " UNIQUE NAMES " + "=".repeat(20));
-                displayNameStats();
-                break;
-            case 2:
-                trackMetrics();
-                break;
+        while (true) {
+            System.out.println("\n[0] 🔙 Go Back");
+            System.out.println("[1] 🧾 Unique Names & Frequency");
+            System.out.print("Enter choice >> ");
+            int choice = Integer.parseInt(in.nextLine());
+            switch (choice) {
+                case 0 -> {
+                    return;
+                }
+                case 1 -> displayNameStats();
+                default -> System.out.println("⚠️ Invalid option. Try again.");
+            }
         }
     }
 
-    private void trackMetrics() {
-        System.out.println("\n" + "=".repeat(40));
-        System.out.println("            Track Metrics");
-        System.out.println("=".repeat(40));
-        System.out.print("Last search used: ");
-
+    public void trackMetrics() {
+        System.out.println("\n" + "═".repeat(50));
+        System.out.println("⚙️  SEARCH METRICS");
+        System.out.println("═".repeat(50));
         if (isBinarySearchLastUsed) {
-            System.out.println("Binary Search Algorithm");
-            System.out.println("Comparisons: " + Main.binaryComparisonCount);
-            System.out.println("Execution Time: " + Main.binarySearchTime + " ns");
+            System.out.println("Algorithm Used   : Binary Search");
+            System.out.println("Reason           : Best for sorted dataset, and is efficient.");
+            System.out.println("Comparisons Made : " + Main.binaryComparisonCount);
+            System.out.println("Execution Time   : " + Main.binarySearchTime + " ns");
         } else {
-            System.out.println("Linear Search Algorithm");
-            System.out.println("Comparisons: " + Main.linearComparisonCount);
-            System.out.println("Execution Time: " + Main.linearSearchTime + " ns");
+            System.out.println("Algorithm Used   : Linear Search");
+            System.out.println("Reason           : Names are unsorted.");
+            System.out.println("Comparisons Made : " + Main.linearComparisonCount);
+            System.out.println("Execution Time   : " + Main.linearSearchTime + " ns");
         }
-
-        System.out.println("Found Index: " + (Main.lastFoundIndex == -1 ? "N/A" : Main.lastFoundIndex));
-        System.out.println("Found Value: " + (Main.lastFoundValue.isEmpty() ? "N/A" : Main.lastFoundValue));
+        System.out.println("Found Index      : " + (Main.lastFoundIndex == -1 ? "N/A" : Main.lastFoundIndex));
+        System.out.println("Found Value      : " + (Main.lastFoundValue.isEmpty() ? "N/A" : Main.lastFoundValue));
+        System.out.println("─".repeat(50));
     }
-
-
 
     private void displayNameStats() {
+        System.out.println("\n" + "═".repeat(50));
+        System.out.println("🧾 UNIQUE NAMES & FREQUENCY");
+        System.out.println("═".repeat(50));
         ArrayList<String> uniqueNames = compileUniqueFirstNames();
         ArrayList<Integer> nameCounts = countFirstNameFrequency();
         bubbleSort(uniqueNames, nameCounts);
         for (int i = 0; i < uniqueNames.size(); i++) {
-            System.out.println((i + 1) + ". " + uniqueNames.get(i) + " (" + nameCounts.get(i) + "x)");
+            System.out.printf("%-3d %-15s (%dx)%n", i + 1, uniqueNames.get(i), nameCounts.get(i));
         }
+        System.out.println("─".repeat(50));
     }
 
     private ArrayList<Integer> countFirstNameFrequency() {

@@ -7,9 +7,10 @@ import java.util.Scanner;
 public class Main {
     public static int binaryComparisonCount = 0;
     public static int linearComparisonCount = 0;
-    public static long binarySearchTime = 0; // NEW: store elapsed time (ns)
-    public static long linearSearchTime = 0; // NEW: store elapsed time (ns)
-
+    public static long binarySearchTime = 0;
+    public static long linearSearchTime = 0;
+    public static int lastFoundIndex = -1;
+    public static String lastFoundValue = "";
     private BufferedReader br;
     private Scanner in = new Scanner(System.in);
     private ArrayList<ArrayList<String>> contactRecords = new ArrayList<>();
@@ -18,8 +19,6 @@ public class Main {
     private String recentKeyValue;
     private boolean recentKeyResult = false;
     private boolean isBinarySearchLastUsed = true;
-    public static int lastFoundIndex = -1;
-    public static String lastFoundValue = "";
 
     public Main() {
         try {
@@ -38,15 +37,17 @@ public class Main {
     private void menu() {
         while (true) {
             System.out.println();
-            System.out.println("=".repeat(40));
-            System.out.println("     Welcome to your contact list.");
-            System.out.println("=".repeat(40));
-            System.out.println("[1] Search by ID (Binary over sorted IDs)");
-            System.out.println("[2] Search by Name (Linear over names)");
-            System.out.println("[3] Show Stats");
-            System.out.println("[4] Exit");
-            System.out.print("Enter choice >>: ");
+            System.out.println("═".repeat(50));
+            System.out.println("📇  CONTACT MANAGEMENT SYSTEM");
+            System.out.println("═".repeat(50));
+            System.out.println("[1] 🔍 Search by ID (Binary Search)");
+            System.out.println("[2] 🔎 Search by Name (Linear Search)");
+            System.out.println("[3] 📊 Show Statistics");
+            System.out.println("[4] 🚪 Exit");
+            System.out.println("─".repeat(50));
+            System.out.print("Enter choice >> ");
             int userChoice = Integer.parseInt(in.nextLine());
+
             switch (userChoice) {
                 case 1 -> searchByID();
                 case 2 -> searchByName();
@@ -57,51 +58,72 @@ public class Main {
                     stats.menu();
                 }
                 case 4 -> {
+                    System.out.println("\n👋 Exiting program... Goodbye!");
                     return;
                 }
+                default -> System.out.println("⚠️ Invalid option. Try again.");
             }
         }
     }
 
     private void searchByID() {
         insertionSort();
-        System.out.print("Enter ID to find >>: ");
+        System.out.println("\n═ SEARCH BY ID ═");
+        System.out.print("Enter ID to find >> ");
         int key = Integer.parseInt(in.nextLine());
 
-        long start = System.nanoTime(); // start timing
+        long start = System.nanoTime();
         ArrayList<ArrayList<String>> findId = binarySearch(key);
-        long end = System.nanoTime(); // end timing
-        binarySearchTime = end - start; // record duration
+        long end = System.nanoTime();
+        binarySearchTime = end - start;
 
         recentKeyValue = key + "";
         binarySearchCount++;
+        System.out.println("─".repeat(50));
         if (findId == null) {
-            System.out.println("ID: " + key + " is non-existing.");
+            System.out.println("❌ ID " + key + " not found.");
             recentKeyResult = false;
             return;
         }
-        System.out.println("-".repeat(50));
-        System.out.printf("%-5s | %-5s%n", findId.getFirst().getFirst(), findId.getFirst().get(1));
+        System.out.printf("%-10s | %-30s%n", "ID", "Name");
+        System.out.println("─".repeat(50));
+        System.out.printf("%-10s | %-30s%n", findId.getFirst().getFirst(), findId.getFirst().get(1));
+        Statistics stats = new Statistics(contactRecords, linearSearchCount, binarySearchCount,
+                recentKeyValue, recentKeyResult, isBinarySearchLastUsed);
+        stats.trackMetrics();
         recentKeyResult = true;
     }
 
     private void searchByName() {
-        System.out.print("Enter name to find >>: ");
+
+        System.out.println("\n═ SEARCH BY NAME ═");
+        System.out.print("Enter name to find >> ");
         String name = in.nextLine();
 
-        long start = System.nanoTime(); // start timing
+        long start = System.nanoTime();
         ArrayList<ArrayList<String>> findName = linearSearch(name);
-        long end = System.nanoTime(); // end timing
-        linearSearchTime = end - start; // record duration
+        long end = System.nanoTime();
+        linearSearchTime = end - start;
 
         recentKeyValue = name;
         linearSearchCount++;
 
-        System.out.println("\nFound " + (findName.size()) + "x record(s) for name " + name);
-        System.out.println("-".repeat(50));
-        for (int i = 0; i < findName.size(); i++) {
-            System.out.printf("%-5s %-5s | %-5s%n", (i + 1) + ".", findName.get(i).get(0), findName.get(i).get(1));
+        System.out.println("\n" + "─".repeat(50));
+        System.out.println("🔎 Found " + findName.size() + " record(s) for name: " + name);
+        System.out.println("─".repeat(50));
+
+        if (findName.isEmpty()) {
+            System.out.println("❌ No matching name found.");
+        } else {
+            System.out.printf("%-5s %-10s | %-30s%n", "#", "ID", "Name");
+            System.out.println("─".repeat(50));
+            for (int i = 0; i < findName.size(); i++) {
+                System.out.printf("%-5s %-10s | %-30s%n", (i + 1) + ".", findName.get(i).get(0), findName.get(i).get(1));
+            }
         }
+        Statistics stats = new Statistics(contactRecords, linearSearchCount, binarySearchCount,
+                recentKeyValue, recentKeyResult, isBinarySearchLastUsed);
+        stats.trackMetrics();
         recentKeyResult = !findName.isEmpty();
     }
 
@@ -147,7 +169,7 @@ public class Main {
             String fullName = contactRecords.get(i).get(1);
             String firstName = fullName.substring(0, fullName.indexOf(' '));
 
-            if (firstName.equals(key) || fullName.equals(key)) {
+            if (firstName.equalsIgnoreCase(key) || fullName.equalsIgnoreCase(key)) {
                 names.add(contactRecords.get(i));
                 lastFoundIndex = i;
                 lastFoundValue = fullName;
