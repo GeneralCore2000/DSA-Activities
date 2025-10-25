@@ -56,8 +56,8 @@ public class Statistics {
 
     private void displayNameStats() {
         ArrayList<String> uniqueNames = compileUniqueFirstNames();
-        bubbleSort(uniqueNames);
         ArrayList<Integer> nameCounts = countFirstNameFrequency();
+        bubbleSort(uniqueNames, nameCounts);
         for (int i = 0; i < uniqueNames.size(); i++) {
             System.out.println((i + 1) + ". " + uniqueNames.get(i) + " (" + nameCounts.get(i) + "x)");
         }
@@ -130,7 +130,7 @@ public class Statistics {
         return maximumID;
     }
 
-    private void bubbleSort(ArrayList<String> unsortedArray) {
+    private void bubbleSort(ArrayList<String> unsortedArray, ArrayList<Integer> counts) {
         for (int i = 0; i < unsortedArray.size() - 1; i++) {
             for (int j = 0; j < unsortedArray.size() - 1; j++) {
                 int firstLetter = unsortedArray.get(j).charAt(0);
@@ -140,6 +140,10 @@ public class Statistics {
                     String temp = unsortedArray.get(j);
                     unsortedArray.set(j, unsortedArray.get(j + 1));
                     unsortedArray.set(j + 1, temp);
+
+                    int tempCount = counts.get(j);
+                    counts.set(j, counts.get(j + 1));
+                    counts.set(j + 1, tempCount);
                 }
             }
         }
